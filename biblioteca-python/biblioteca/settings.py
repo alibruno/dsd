@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,30 +28,24 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
-# Application definition
-SWAGGER_SETTINGS = { 
-    'SECURITY_DEFINITIONS': { 
-        'Bearer': { 
-            'type': 'apiKey', 
-            'name': 'Authorization', 
-            'in': 'header', 
-            'description': 'JWT Authorization. Use o formato: Bearer <seu_token>' 
-        } 
-    } 
-} 
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-        # Se houver SessionAuthentication ou BasicAuthentication aqui, mantenha-as abaixo
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated', 
-    ),
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API Biblioteca',
+    'DESCRIPTION': 'Documentação da API de Biblioteca Digital',
+    'VERSION': '1.0.0',
+    'CONTACT': {'email': 'contato@exemplo.com'},
+    'LICENSE': {'name': 'MIT'},
+    'SERVE_PERMISSIONS': ['rest_framework.permissions.AllowAny'],
 }
 
-from datetime import timedelta
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
 
 SIMPLE_JWT = {
     # Aumente o tempo de acesso para a aula (ex: 1 hora)
@@ -63,18 +58,18 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': False,
 }
 
-INSTALLED_APPS = [ 
-'django.contrib.admin', 
-'django.contrib.auth', 
-'django.contrib.contenttypes', 
-'django.contrib.sessions', 
-'django.contrib.messages', 
-'django.contrib.staticfiles', 
-'rest_framework',         
-'livros',                  
-'rest_framework_simplejwt',
-'drf_yasg', 
-] 
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',
+    'livros',
+    'rest_framework_simplejwt',
+    'drf_spectacular',
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

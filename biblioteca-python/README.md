@@ -42,5 +42,5 @@ As dependências principais incluem:
 - `Django` (framework principal)
 - `djangorestframework` (provê suporte à criação de
 APIs RESTful)
-- `drf-yasg` (integra o Swagger para geração automática de documentação)
+- `drf-spectacular` (integra o Swagger para geração automática de documentação)
 - `djangorestframework-simplejwt` (adiciona suporte à autenticação baseada em tokens JWT.)
