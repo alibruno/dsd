@@ -16,8 +16,24 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+from rest_framework import routers
+from app.views import CarroViewSet, LocacaoViewSet
+
+# O Router lê as ViewSets e cria todas as rotas padrão da API automaticamente
+router = routers.DefaultRouter()
+
+# Rota para os carros:
+# Cria endpoints: /api/carros/ e /api/carros/<id>/
+# 'basename' ajuda a nomear as rotas internas geradas pelo DRF
+router.register(r'carros', CarroViewSet, basename='carro')
+
+# Rota para as locações:
+# Cria endpoints: /api/locacoes/ e /api/locacoes/<id>/
+router.register(r'locacoes', LocacaoViewSet, basename='locacao')
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    # include(router.urls) injeta todas as rotas geradas pelo router na URL base do app
+    path('', include(router.urls)),
 ]
