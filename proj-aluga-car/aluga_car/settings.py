@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "drf_spectacular", 
-    # "rest_framework_simplejwt",
     "app",
 ]
 
@@ -133,6 +132,10 @@ MAILERS = {
 }
 
 REST_FRAMEWORK = {
+    # Definir o JWT como classe de autenticação do DRF
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+            'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
     # Definir o gerador de Schema padrão do DRF para usar o drf-spectacular
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
@@ -143,19 +146,25 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'API RESTful para gerenciamento de frota e aluguel de carros.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,  # Esconde o endpoint do schema da lista do Swagger
+    
+    # Adiciona suporte a Bearer Token no Swagger UI
+    'SECURITY': [{'BearerAuth': []}],
+    'SECURITY_DEFINITIONS': {
+        'BearerAuth': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization',
+            'description': 'Insira o token JWT no formato: Bearer <seu_token>'
+        }
+    }
 }
 
-
-# SIMPLE_JWT = {
-#     # Aumente o tempo de acesso para a aula (ex: 1 hora)
-#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    
-#     # Aumente o tempo do refresh para a aula (ex: 7 dias)
-#     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-    
-#     'ROTATE_REFRESH_TOKENS': False,
-#     'BLACKLIST_AFTER_ROTATION': False,
-# }
+# (Opcional) Configurar o tempo de vida dos Tokens
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),   # Token de acesso dura 1 hora
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),     # Token de refresh dura 1 dia
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
 
 ##### CODESPACES #####
 

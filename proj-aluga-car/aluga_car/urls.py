@@ -27,6 +27,12 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
+# Importação das views do simplejwt
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
 # O Router lê as ViewSets e cria todas as rotas padrão da API automaticamente
 router = routers.DefaultRouter()
 
@@ -54,4 +60,9 @@ urlpatterns = [
     
     # 3. Interface gráfica alternativa e elegante do REDOC
     path('api/docs/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+
+    # --- ENDPOINTS DE AUTENTICAÇÃO JWT ---
+
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),    # Login (gera access e refresh)
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),   # Renova o access token
 ]

@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from .models import Carro, Locacao
 from .serializers import CarroSerializer, LocacaoSerializer
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
 # ModelViewSet fornece automaticamente as ações:
 # .list() [GET /api/carros/], .create() [POST /api/carros/],
@@ -11,6 +12,8 @@ class CarroViewSet(viewsets.ModelViewSet):
     queryset = Carro.objects.all()
     # serializer_class indica qual serializer vai processar os dados desta view
     serializer_class = CarroSerializer
+    # Qualquer um pode ver os carros (GET), mas apenas usuários autenticados podem criar/editar/deletar
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class LocacaoViewSet(viewsets.ModelViewSet):
@@ -19,3 +22,5 @@ class LocacaoViewSet(viewsets.ModelViewSet):
     # Isso evita o problema de performance 'N+1 queries' quando o 'carro_detail' for montado no JSON.
     queryset = Locacao.objects.select_related('carro').all()
     serializer_class = LocacaoSerializer
+    # Exige que o usuário esteja autenticado via JWT para qualquer operação nesta view
+    permission_classes = [IsAuthenticated]
