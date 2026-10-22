@@ -20,6 +20,13 @@ from django.urls import include, path
 from rest_framework import routers
 from app.views import CarroViewSet, LocacaoViewSet
 
+# Importação das views de documentação do drf-spectacular
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularRedocView,
+    SpectacularSwaggerView,
+)
+
 # O Router lê as ViewSets e cria todas as rotas padrão da API automaticamente
 router = routers.DefaultRouter()
 
@@ -35,5 +42,16 @@ router.register(r'locacoes', LocacaoViewSet, basename='locacao')
 urlpatterns = [
     path("admin/", admin.site.urls),
     # include(router.urls) injeta todas as rotas geradas pelo router na URL base do app
-    path('', include(router.urls)),
+    path('api/', include(router.urls)),
+
+    # --- ENDPOINTS DA DOCUMENTAÇÃO SWAGGER / OPENAPI ---
+    
+    # 1. Gera o arquivo de esquema estruturado em formato YAML/JSON
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    
+    # 2. Interface gráfica interativa do SWAGGER UI
+    path('api/docs/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    
+    # 3. Interface gráfica alternativa e elegante do REDOC
+    path('api/docs/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]

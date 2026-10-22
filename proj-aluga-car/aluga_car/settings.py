@@ -40,8 +40,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "drf_spectacular", 
     # "rest_framework_simplejwt",
-    #"drf_spetacular", 
     "app",
 ]
 
@@ -133,13 +133,16 @@ MAILERS = {
 }
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
-        # or 'rest_framework.authentication.TokenAuthentication',
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        #'rest_framework.permissions.IsAuthenticated',
-    ]
+    # Definir o gerador de Schema padrão do DRF para usar o drf-spectacular
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+# (Opcional) Personalizar as informações gerais da sua API na documentação
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API de Locação de Veículos',
+    'DESCRIPTION': 'API RESTful para gerenciamento de frota e aluguel de carros.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,  # Esconde o endpoint do schema da lista do Swagger
 }
 
 
@@ -153,6 +156,8 @@ REST_FRAMEWORK = {
 #     'ROTATE_REFRESH_TOKENS': False,
 #     'BLACKLIST_AFTER_ROTATION': False,
 # }
+
+##### CODESPACES #####
 
 if 'CODESPACE_NAME' in os.environ:
     codespace_name = os.getenv("CODESPACE_NAME")
