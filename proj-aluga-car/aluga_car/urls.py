@@ -1,0 +1,68 @@
+"""
+URL configuration for aluga_car project.
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/6.1/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
+
+from django.contrib import admin
+from django.urls import include, path
+from rest_framework import routers
+from app.views import CarroViewSet, LocacaoViewSet
+
+# Importação das views de documentação do drf-spectacular
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularRedocView,
+    SpectacularSwaggerView,
+)
+
+# Importação das views do simplejwt
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
+# O Router lê as ViewSets e cria todas as rotas padrão da API automaticamente
+router = routers.DefaultRouter()
+
+# Rota para os carros:
+# Cria endpoints: /api/carros/ e /api/carros/<id>/
+# 'basename' ajuda a nomear as rotas internas geradas pelo DRF
+router.register(r'carros', CarroViewSet, basename='carro')
+
+# Rota para as locações:
+# Cria endpoints: /api/locacoes/ e /api/locacoes/<id>/
+router.register(r'locacoes', LocacaoViewSet, basename='locacao')
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    # include(router.urls) injeta todas as rotas geradas pelo router na URL base do app
+    path('api/', include(router.urls)),
+
+    # --- ENDPOINTS DA DOCUMENTAÇÃO SWAGGER / OPENAPI ---
+    
+    # 1. Gera o arquivo de esquema estruturado em formato YAML/JSON
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    
+    # 2. Interface gráfica interativa do SWAGGER UI
+    path('api/docs/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    
+    # 3. Interface gráfica alternativa e elegante do REDOC
+    path('api/docs/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+
+    # --- ENDPOINTS DE AUTENTICAÇÃO JWT ---
+
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),    # Login (gera access e refresh)
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),   # Renova o access token
+]
